@@ -1,0 +1,17 @@
+# Dependencies
+node_modules/
+
+# Environment variables (contain API keys)
+.env
+.env.local
+.env.*.local
+
+# Build output
+dist/
+
+# Vite cache
+.vite/
+
+# Editor
+.vscode/
+.idea/
