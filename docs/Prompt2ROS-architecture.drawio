@@ -1,0 +1,230 @@
+<mxfile host="app.diagrams.net" modified="2026-05-19T00:00:00.000Z" agent="Prompt2ROS" version="22.1.0" type="device">
+  <diagram id="prompt2ros-arch" name="Prompt2ROS Architecture">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Title -->
+        <mxCell id="title" value="Prompt2ROS / OmniROS Controller — Architecture" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=22;fontStyle=1;fontColor=#1a1a2e;" vertex="1" parent="1">
+          <mxGeometry x="400" y="20" width="800" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Operator -->
+        <mxCell id="operator" value="Operator&#xa;(voice hr-HR)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="80" y="120" width="140" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- Browser container -->
+        <mxCell id="browser-group" value="Browser (React + Vite)" style="swimlane;rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontStyle=1;fontSize=14;startSize=32;" vertex="1" parent="1">
+          <mxGeometry x="280" y="90" width="520" height="420" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ui" value="Dashboard UI&#xa;Video · Map · Chat · Telemetry" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;" vertex="1" parent="browser-group">
+          <mxGeometry x="30" y="50" width="200" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="speech" value="Web Speech API&#xa;hr-HR → transcript" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;" vertex="1" parent="browser-group">
+          <mxGeometry x="30" y="140" width="200" height="55" as="geometry" />
+        </mxCell>
+
+        <mxCell id="capture" value="Frame capture&#xa;MJPEG → JPEG base64" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;" vertex="1" parent="browser-group">
+          <mxGeometry x="30" y="220" width="200" height="55" as="geometry" />
+        </mxCell>
+
+        <mxCell id="aibrain" value="useAIBrain&#xa;Safety layer · TTS · Motion" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=12;" vertex="1" parent="browser-group">
+          <mxGeometry x="270" y="50" width="210" height="70" as="geometry" />
+        </mxCell>
+
+        <mxCell id="safety" value="Safety Layer&#xa;Speed limit · High-risk modal · E-STOP" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;" vertex="1" parent="browser-group">
+          <mxGeometry x="270" y="150" width="210" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="store" value="Zustand Store&#xa;ROS · telemetry · no-go zones" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" vertex="1" parent="browser-group">
+          <mxGeometry x="270" y="240" width="210" height="55" as="geometry" />
+        </mxCell>
+
+        <mxCell id="roslib" value="roslibjs&#xa;WebSocket client" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;" vertex="1" parent="browser-group">
+          <mxGeometry x="270" y="330" width="210" height="55" as="geometry" />
+        </mxCell>
+
+        <!-- Gemini -->
+        <mxCell id="gemini" value="Google Gemini API&#xa;(multimodal: text + image)&#xa;JSON: action_plan, cmd_vel, duration, risk" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="880" y="130" width="220" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- Robot side -->
+        <mxCell id="robot-group" value="Robot / ROS 2 (Docker / onboard)" style="swimlane;rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontStyle=1;fontSize=14;startSize=32;" vertex="1" parent="1">
+          <mxGeometry x="280" y="560" width="820" height="280" as="geometry" />
+        </mxCell>
+
+        <mxCell id="rosbridge" value="rosbridge_server&#xa;WebSocket :9090" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;" vertex="1" parent="robot-group">
+          <mxGeometry x="40" y="60" width="180" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="webvideo" value="web_video_server&#xa;MJPEG :8080" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;" vertex="1" parent="robot-group">
+          <mxGeometry x="40" y="160" width="180" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ros2" value="ROS 2 nodes&#xa;navigation · drivers" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;" vertex="1" parent="robot-group">
+          <mxGeometry x="280" y="60" width="200" height="70" as="geometry" />
+        </mxCell>
+
+        <mxCell id="cmdvel" value="/cmd_vel&#xa;geometry_msgs/Twist" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" vertex="1" parent="robot-group">
+          <mxGeometry x="540" y="55" width="160" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="odom" value="/odom&#xa;nav_msgs/Odometry" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" vertex="1" parent="robot-group">
+          <mxGeometry x="540" y="130" width="160" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="camera" value="/camera/...&#xa;image topic" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" vertex="1" parent="robot-group">
+          <mxGeometry x="540" y="200" width="160" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="physical" value="Physical robot&#xa;(e.g. Ranger)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=1;fontSize=13;" vertex="1" parent="robot-group">
+          <mxGeometry x="760" y="90" width="120" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- Legend -->
+        <mxCell id="legend-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#cccccc;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="1180" y="90" width="200" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-title" value="Legend" style="text;html=1;strokeColor=none;fillColor=none;fontStyle=1;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="1200" y="100" width="80" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="leg1" value="Control / commands" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="1200" y="125" width="160" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="leg2" value="AI / cloud" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="1200" y="160" width="160" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="leg3" value="Safety" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="1200" y="195" width="160" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="leg4" value="ROS bridge / stream" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="1200" y="230" width="160" height="28" as="geometry" />
+        </mxCell>
+
+        <!-- Arrows: operator to browser -->
+        <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#6c8ebf;endArrow=block;endFill=1;" edge="1" parent="1" source="operator" target="speech">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e1l" value="hold to speak" style="edgeLabel;html=1;align=center;verticalAlign=middle;fontSize=10;" vertex="1" connectable="0" parent="e1">
+          <mxGeometry x="-0.1" relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+        </mxCell>
+
+        <!-- speech to aibrain -->
+        <mxCell id="e2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" edge="1" parent="1" source="speech" target="aibrain">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- video to capture -->
+        <mxCell id="e3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#d79b00;dashed=1;" edge="1" parent="1" source="webvideo" target="capture">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="130" y="500" />
+              <mxPoint x="130" y="355" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e3l" value="MJPEG HTTP" style="edgeLabel;html=1;align=center;verticalAlign=middle;fontSize=10;" vertex="1" connectable="0" parent="e3">
+          <mxGeometry x="-0.2" relative="1" as="geometry"><mxPoint x="10" y="-10" as="offset" /></mxGeometry>
+        </mxCell>
+
+        <!-- capture to aibrain -->
+        <mxCell id="e4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" edge="1" parent="1" source="capture" target="aibrain">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- aibrain to gemini -->
+        <mxCell id="e5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#6c8ebf;endArrow=block;endFill=1;" edge="1" parent="1" source="aibrain" target="gemini">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5l" value="HTTPS&#xa;text + image" style="edgeLabel;html=1;align=center;verticalAlign=middle;fontSize=10;" vertex="1" connectable="0" parent="e5">
+          <mxGeometry relative="1" as="geometry"><mxPoint y="-10" as="offset" /></mxGeometry>
+        </mxCell>
+
+        <!-- gemini back -->
+        <mxCell id="e6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#6c8ebf;dashed=1;endArrow=block;endFill=1;" edge="1" parent="1" source="gemini" target="safety">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="990" y="280" />
+              <mxPoint x="850" y="280" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e6l" value="JSON plan" style="edgeLabel;html=1;align=center;verticalAlign=middle;fontSize=10;" vertex="1" connectable="0" parent="e6">
+          <mxGeometry relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+        </mxCell>
+
+        <!-- safety to roslib -->
+        <mxCell id="e7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#b85450;endArrow=block;endFill=1;" edge="1" parent="1" source="safety" target="roslib">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e7l" value="cmd_vel (clamped)" style="edgeLabel;html=1;align=center;verticalAlign=middle;fontSize=10;" vertex="1" connectable="0" parent="e7">
+          <mxGeometry relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+        </mxCell>
+
+        <!-- roslib to rosbridge -->
+        <mxCell id="e8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#d79b00;endArrow=block;endFill=1;" edge="1" parent="1" source="roslib" target="rosbridge">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e8l" value="WebSocket ws://IP:9090" style="edgeLabel;html=1;align=center;verticalAlign=middle;fontSize=10;" vertex="1" connectable="0" parent="e8">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="20" as="offset" /></mxGeometry>
+        </mxCell>
+
+        <!-- rosbridge to ros2 -->
+        <mxCell id="e9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#9673a6;" edge="1" parent="1" source="rosbridge" target="ros2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ros2 to topics -->
+        <mxCell id="e10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;endArrow=block;endFill=1;" edge="1" parent="1" source="ros2" target="cmdvel">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;endArrow=block;endFill=1;" edge="1" parent="1" source="ros2" target="odom">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;endArrow=block;endFill=1;" edge="1" parent="1" source="ros2" target="camera">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- cmdvel to robot -->
+        <mxCell id="e13" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#b85450;endArrow=block;endFill=1;" edge="1" parent="1" source="cmdvel" target="physical">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- odom back to store -->
+        <mxCell id="e14" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;dashed=1;endArrow=block;endFill=1;" edge="1" parent="1" source="odom" target="store">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="900" y="520" />
+              <mxPoint x="900" y="420" />
+              <mxPoint x="625" y="420" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e14l" value="telemetry" style="edgeLabel;html=1;align=center;verticalAlign=middle;fontSize=10;" vertex="1" connectable="0" parent="e14">
+          <mxGeometry relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+        </mxCell>
+
+        <!-- camera to webvideo -->
+        <mxCell id="e15" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#d79b00;" edge="1" parent="1" source="camera" target="webvideo">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Pipeline note -->
+        <mxCell id="pipeline" value="1. Speak → 2. Capture frame → 3. Gemini → 4. Safety + confirm → 5. /cmd_vel @ 10 Hz → 6. Auto-stop" style="text;html=1;strokeColor=none;fillColor=#fff2cc;align=center;verticalAlign=middle;fontSize=11;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="280" y="870" width="820" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- .env note -->
+        <mxCell id="envnote" value=".env: VITE_ROSBRIDGE_URL · VITE_MJPEG_STREAM_URL · VITE_CMD_VEL_TOPIC · VITE_GEMINI_API_KEY" style="text;html=1;strokeColor=#666666;fillColor=#f5f5f5;align=center;verticalAlign=middle;fontSize=10;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="1180" y="320" width="200" height="50" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

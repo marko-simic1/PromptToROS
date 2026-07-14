@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useCallback } from 'react';
 import Header from './components/Header';
 import VideoFeed from './components/VideoFeed';
 import ChatLog from './components/ChatLog';
@@ -54,11 +54,18 @@ export default function App() {
   const videoRef = useRef(null);
 
   const { initROS, emergencyStop } = useRobotStore();
-  const { startListening, stopListening, executeCommand: execCmd } = useAIBrain(videoRef);
+  const { startListening, stopListening, executeCommand } = useAIBrain(videoRef);
+  const executeCommandRef = useRef(executeCommand);
+  executeCommandRef.current = executeCommand;
+
+  const handleConfirmHighRisk = useCallback((command) => {
+    executeCommandRef.current(command);
+  }, []);
 
   useEffect(() => {
     initROS();
-  }, []); 
+    return () => useRobotStore.getState().closeROS();
+  }, [initROS]);
 
   useEffect(() => {
     const handler = (e) => {
@@ -93,7 +100,7 @@ export default function App() {
       </main>
 
       <ControlBar onStartListening={startListening} onStopListening={stopListening} />
-      <HighRiskModal onConfirm={(command) => execCmd(command)} />
+      <HighRiskModal onConfirm={handleConfirmHighRisk} />
     </div>
   );
 }

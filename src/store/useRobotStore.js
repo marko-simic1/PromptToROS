@@ -44,7 +44,15 @@ const useRobotStore = create((set, get) => ({
   isProcessing: false,
   isSpeaking: false,
 
+  rosIntentionalClose: false,
+
   initROS: () => {
+    const existing = get().ros;
+    if (existing) {
+      try { existing.close(); } catch (_) {}
+    }
+
+    set({ rosIntentionalClose: false });
     const ros = new ROSLIB.Ros({ url: ENV.ROSBRIDGE_URL });
 
     ros.on('connection', () => {
@@ -59,14 +67,25 @@ const useRobotStore = create((set, get) => ({
     });
 
     ros.on('close', () => {
-      console.warn('[ROS] Connection closed — retrying in 3 s');
       set({ rosConnected: false, cmdVelTopic: null });
+      if (get().rosIntentionalClose) return;
+      console.warn('[ROS] Connection closed — retrying in 3 s');
       setTimeout(() => {
+        if (get().rosIntentionalClose) return;
         try { ros.connect(ENV.ROSBRIDGE_URL); } catch (_) {}
       }, 3000);
     });
 
     set({ ros });
+  },
+
+  closeROS: () => {
+    set({ rosIntentionalClose: true });
+    const { ros } = get();
+    if (ros) {
+      try { ros.close(); } catch (_) {}
+    }
+    set({ ros: null, rosConnected: false, cmdVelTopic: null });
   },
 
   _setupTopics: (ros) => {
@@ -113,21 +132,31 @@ const useRobotStore = create((set, get) => ({
     const { cmdVelTopic } = get();
     if (!cmdVelTopic) {
       console.warn('[ROS] cmd_vel topic not ready');
-      return;
+      return false;
     }
     const msg = new ROSLIB.Message({
       linear: { x: linear, y: 0, z: 0 },
       angular: { x: 0, y: 0, z: angular },
     });
     cmdVelTopic.publish(msg);
+    return true;
+  },
+
+  cancelActiveMotion: () => {
+    const { pendingCommand, publishCmdVel: pubVel } = get();
+    if (!pendingCommand?.cmdVelIntervalId) return;
+
+    if (pendingCommand.stopTimeoutId) {
+      clearTimeout(pendingCommand.stopTimeoutId);
+    }
+    clearInterval(pendingCommand.cmdVelIntervalId);
+    pubVel(0, 0);
+    set({ pendingCommand: null });
   },
 
   emergencyStop: () => {
-    const { cmdVelTopic, pendingCommand } = get();
-
-    if (pendingCommand?.stopTimeoutId) {
-      clearTimeout(pendingCommand.stopTimeoutId);
-    }
+    const { cmdVelTopic } = get();
+    get().cancelActiveMotion();
 
     if (cmdVelTopic) {
       const zero = new ROSLIB.Message({
@@ -169,6 +198,8 @@ const useRobotStore = create((set, get) => ({
 
   openHighRiskModal: (command) =>
     set({ isHighRiskModalOpen: true, pendingCommand: command }),
+
+  dismissHighRiskModal: () => set({ isHighRiskModalOpen: false }),
 
   closeHighRiskModal: () =>
     set({ isHighRiskModalOpen: false, pendingCommand: null }),

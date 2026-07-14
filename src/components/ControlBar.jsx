@@ -18,10 +18,10 @@ export default function ControlBar({ onStartListening, onStopListening }) {
 
   const handlePointerDown = useCallback((e) => {
     e.preventDefault();
-    if (isProcessing || isSpeaking) return;
+    if (isProcessing) return;
     setIsHolding(true);
     onStartListening?.();
-  }, [isProcessing, isSpeaking, onStartListening]);
+  }, [isProcessing, onStartListening]);
 
   const handlePointerUp = useCallback((e) => {
     e.preventDefault();

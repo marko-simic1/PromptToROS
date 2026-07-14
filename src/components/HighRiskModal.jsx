@@ -6,6 +6,7 @@ export default function HighRiskModal({ onConfirm }) {
   const {
     isHighRiskModalOpen,
     pendingCommand,
+    dismissHighRiskModal,
     closeHighRiskModal,
     emergencyStop,
   } = useRobotStore();
@@ -20,7 +21,7 @@ export default function HighRiskModal({ onConfirm }) {
   const cmd = pendingCommand;
 
   const handleConfirm = () => {
-    closeHighRiskModal();
+    dismissHighRiskModal();
     onConfirm?.(cmd);
   };
 
