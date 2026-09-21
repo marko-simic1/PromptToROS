@@ -38,7 +38,7 @@ Voice (hr-HR) ──► Gemini 2.0 Flash ──► Safety Layer ──► /cmd_v
 |---|---|
 | Framework | React 18 + Vite 5 |
 | Styling | Tailwind CSS 3 (dark mode) |
-| UI Components | shadcn/ui + Radix UI + Lucide React |
+| Icons | Lucide React |
 | State Management | Zustand 4 |
 | ROS Integration | roslibjs (rosbridge WebSocket) |
 | AI | Google Gemini API (Gemini 2.0 Flash) |
@@ -296,8 +296,6 @@ Prompt2ROS_2.0/
     ├── main.jsx                  # React entry point
     ├── App.jsx                   # Root layout + Esc key handler
     ├── index.css                 # Tailwind + CSS variables + utilities
-    ├── lib/
-    │   └── utils.js              # cn() helper (clsx + tailwind-merge)
     ├── store/
     │   └── useRobotStore.js      # Zustand store: ROS, telemetry, state
     ├── hooks/
@@ -308,12 +306,7 @@ Prompt2ROS_2.0/
         ├── ChatLog.jsx           # Scrolling task/command history
         ├── CanvasMap.jsx         # 2D map: grid + robot + no-go zones
         ├── ControlBar.jsx        # Voice button + speed slider + E-STOP
-        ├── HighRiskModal.jsx     # Confirmation dialog for risk_level:"high"
-        └── ui/
-            ├── badge.jsx         # shadcn/ui Badge
-            ├── button.jsx        # shadcn/ui Button (Radix Slot)
-            ├── card.jsx          # shadcn/ui Card family
-            └── slider.jsx        # shadcn/ui Slider (Radix Slider)
+        └── HighRiskModal.jsx     # Confirmation dialog for risk_level:"high"
 ```
 
 ---
