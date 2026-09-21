@@ -1,4 +1,3 @@
-import React from 'react';
 import { Cpu, Activity, Brain, Mic, Camera } from 'lucide-react';
 import useRobotStore from '../store/useRobotStore';
 

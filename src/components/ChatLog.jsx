@@ -1,5 +1,5 @@
-import React, { useRef, useEffect } from 'react';
-import { Bot, User, AlertTriangle, Info, Trash2 } from 'lucide-react';
+import { useRef, useEffect } from 'react';
+import { Bot, User, Info, Trash2 } from 'lucide-react';
 import useRobotStore from '../store/useRobotStore';
 
 const ROLE_META = {
@@ -44,13 +44,11 @@ function MessageBubble({ message }) {
 
   return (
     <div className={`flex gap-2 ${meta.align}`}>
-      {/* Avatar */}
       <div
         className={`flex-shrink-0 w-7 h-7 rounded-full ${meta.iconBg} flex items-center justify-center mt-0.5`}
       >
         <Icon size={13} className="text-white" />
       </div>
-      {/* Bubble */}
       <div
         className={`max-w-[80%] px-3 py-2 rounded-2xl border text-sm leading-relaxed ${meta.bubbleClass}`}
       >
@@ -68,14 +66,12 @@ export default function ChatLog() {
   const { messages, clearMessages } = useRobotStore();
   const endRef = useRef(null);
 
-  // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
   return (
     <div className="flex flex-col h-full min-h-0">
-      {/* Header bar */}
       <div className="flex items-center justify-between px-3 py-2 border-b border-zinc-800 shrink-0">
         <div className="flex items-center gap-2">
           <Bot size={13} className="text-zinc-400" />
@@ -99,7 +95,6 @@ export default function ChatLog() {
         )}
       </div>
 
-      {/* Message list */}
       <div className="flex-1 overflow-y-auto px-3 py-3 space-y-3 scrollbar-thin min-h-0">
         {messages.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full text-center pb-4">

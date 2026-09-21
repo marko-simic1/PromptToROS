@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { Mic, MicOff, Square, Zap, Activity, Loader2 } from 'lucide-react';
 import useRobotStore from '../store/useRobotStore';
 

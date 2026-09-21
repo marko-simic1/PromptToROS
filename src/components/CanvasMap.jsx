@@ -1,25 +1,16 @@
-import React, {
-  useRef,
-  useEffect,
-  useCallback,
-  useState,
-  useMemo,
-} from 'react';
+import { useRef, useEffect, useCallback, useState } from 'react';
 import { Map, Trash2, ZoomIn, ZoomOut, Crosshair, PenLine } from 'lucide-react';
 import useRobotStore from '../store/useRobotStore';
 
-/* ─── constants ─────────────────────────────────────── */
-const BASE_SCALE = 50; // px per metre at zoom=1
+const BASE_SCALE = 50;
 const GRID_STEP = 1;
 
-/** Convert ROS world coords → canvas pixel coords */
 function rosToCanvas(rx, ry, canvas, zoom, offset) {
   const cx = canvas.width  / 2 + offset.x;
   const cy = canvas.height / 2 + offset.y;
   return { x: cx + rx * BASE_SCALE * zoom, y: cy - ry * BASE_SCALE * zoom };
 }
 
-/** Convert canvas pixel coords → ROS world coords */
 function canvasToRos(px, py, canvas, zoom, offset) {
   const cx = canvas.width  / 2 + offset.x;
   const cy = canvas.height / 2 + offset.y;
@@ -29,13 +20,11 @@ function canvasToRos(px, py, canvas, zoom, offset) {
   };
 }
 
-/* ─── draw ───────────────────────────────────────────── */
 function drawMap({ canvas, position, orientation, noGoZones, zoom, offset, drawingRect }) {
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
   const { width: W, height: H } = canvas;
 
-  /* Background */
   ctx.fillStyle = '#09090b';
   ctx.fillRect(0, 0, W, H);
 
@@ -43,7 +32,6 @@ function drawMap({ canvas, position, orientation, noGoZones, zoom, offset, drawi
   const cy = H / 2 + offset.y;
   const gp = GRID_STEP * BASE_SCALE * zoom;
 
-  /* ── minor grid lines ── */
   ctx.strokeStyle = 'rgba(255,255,255,0.03)';
   ctx.lineWidth = 1;
   for (let x = ((cx % gp) + gp) % gp; x < W; x += gp) {
@@ -53,7 +41,6 @@ function drawMap({ canvas, position, orientation, noGoZones, zoom, offset, drawi
     ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
   }
 
-  /* ── axes ── */
   ctx.strokeStyle = 'rgba(255,255,255,0.10)';
   ctx.lineWidth = 1;
   ctx.setLineDash([6, 4]);
@@ -61,13 +48,11 @@ function drawMap({ canvas, position, orientation, noGoZones, zoom, offset, drawi
   ctx.beginPath(); ctx.moveTo(0,  cy); ctx.lineTo(W, cy); ctx.stroke();
   ctx.setLineDash([]);
 
-  /* ── axis labels ── */
   ctx.fillStyle = 'rgba(255,255,255,0.15)';
   ctx.font = '10px monospace';
   ctx.fillText('+X', cx + 6, cy - 6);
   ctx.fillText('+Y', cx + 6, 14);
 
-  /* ── metre labels on X axis ── */
   ctx.fillStyle = 'rgba(255,255,255,0.18)';
   ctx.font = '9px monospace';
   for (let m = -20; m <= 20; m++) {
@@ -77,7 +62,6 @@ function drawMap({ canvas, position, orientation, noGoZones, zoom, offset, drawi
     ctx.fillText(`${m}m`, px - 7, cy + 12);
   }
 
-  /* ── no-go zones ── */
   noGoZones.forEach((zone) => {
     const s = rosToCanvas(zone.x1, zone.y1, canvas, zoom, offset);
     const e = rosToCanvas(zone.x2, zone.y2, canvas, zoom, offset);
@@ -94,13 +78,11 @@ function drawMap({ canvas, position, orientation, noGoZones, zoom, offset, drawi
     ctx.strokeRect(rx, ry, rw, rh);
     ctx.setLineDash([]);
 
-    /* Label */
     ctx.fillStyle = 'rgba(239,68,68,0.7)';
     ctx.font = '9px monospace';
     ctx.fillText('NO-GO', rx + 4, ry + 12);
   });
 
-  /* ── live drawing rect ── */
   if (drawingRect) {
     const { x, y, w, h } = drawingRect;
     ctx.fillStyle = 'rgba(239,68,68,0.08)';
@@ -112,7 +94,6 @@ function drawMap({ canvas, position, orientation, noGoZones, zoom, offset, drawi
     ctx.setLineDash([]);
   }
 
-  /* ── robot ── */
   const rp = rosToCanvas(position.x, position.y, canvas, zoom, offset);
   const yaw = orientation.yaw;
   const r = Math.max(8, 10 * zoom);
@@ -121,11 +102,9 @@ function drawMap({ canvas, position, orientation, noGoZones, zoom, offset, drawi
   ctx.translate(rp.x, rp.y);
   ctx.rotate(-yaw);
 
-  // outer glow
   ctx.shadowColor = 'rgba(59,130,246,0.7)';
   ctx.shadowBlur = 18;
 
-  // body circle
   ctx.beginPath();
   ctx.arc(0, 0, r, 0, Math.PI * 2);
   ctx.fillStyle = 'rgba(59,130,246,0.25)';
@@ -134,7 +113,6 @@ function drawMap({ canvas, position, orientation, noGoZones, zoom, offset, drawi
   ctx.fill();
   ctx.stroke();
 
-  // direction arrow (triangle pointing +X in ROS = up on canvas after rotation)
   const ah = r * 1.3;
   ctx.shadowBlur = 0;
   ctx.beginPath();
@@ -147,14 +125,12 @@ function drawMap({ canvas, position, orientation, noGoZones, zoom, offset, drawi
 
   ctx.restore();
 
-  /* ── origin cross ── */
   const o = rosToCanvas(0, 0, canvas, zoom, offset);
   ctx.strokeStyle = 'rgba(255,255,255,0.25)';
   ctx.lineWidth = 1;
   ctx.beginPath(); ctx.moveTo(o.x - 6, o.y); ctx.lineTo(o.x + 6, o.y); ctx.stroke();
   ctx.beginPath(); ctx.moveTo(o.x, o.y - 6); ctx.lineTo(o.x, o.y + 6); ctx.stroke();
 
-  /* ── HUD: coordinate readout ── */
   ctx.fillStyle = 'rgba(255,255,255,0.25)';
   ctx.font = '10px monospace';
   ctx.fillText(
@@ -164,7 +140,6 @@ function drawMap({ canvas, position, orientation, noGoZones, zoom, offset, drawi
   );
 }
 
-/* ─── component ──────────────────────────────────────── */
 export default function CanvasMap() {
   const { position, orientation, noGoZones, addNoGoZone, clearNoGoZones } = useRobotStore();
 
@@ -178,7 +153,6 @@ export default function CanvasMap() {
   const [drawStart, setDrawStart] = useState(null);
   const [drawingRect, setDrawingRect] = useState(null);
 
-  /* Stable draw function */
   const draw = useCallback(() => {
     drawMap({
       canvas: canvasRef.current,
@@ -186,10 +160,8 @@ export default function CanvasMap() {
     });
   }, [position, orientation, noGoZones, zoom, offset, drawingRect]);
 
-  // Keep the ref updated so ResizeObserver always calls latest version
   useEffect(() => { drawFnRef.current = draw; }, [draw]);
 
-  /* Resize observer — keeps canvas resolution = container pixels */
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -209,10 +181,8 @@ export default function CanvasMap() {
     return () => ro.disconnect();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  /* Redraw when state changes */
   useEffect(() => { draw(); }, [draw]);
 
-  /* ── Mouse handlers for no-go zone drawing ── */
   const getCanvasXY = (e) => {
     const rect = canvasRef.current.getBoundingClientRect();
     return { x: e.clientX - rect.left, y: e.clientY - rect.top };
@@ -265,7 +235,6 @@ export default function CanvasMap() {
 
   return (
     <div className="flex flex-col h-full">
-      {/* Toolbar */}
       <div className="flex items-center justify-between px-3 py-2 border-b border-zinc-800 shrink-0">
         <div className="flex items-center gap-2">
           <Map size={13} className="text-zinc-400" />
@@ -277,7 +246,6 @@ export default function CanvasMap() {
           )}
         </div>
         <div className="flex items-center gap-1.5">
-          {/* Draw mode toggle */}
           <button
             onClick={() => { setMode((m) => (m === 'draw' ? 'view' : 'draw')); cancelDraw(); }}
             title="Toggle no-go zone drawing"
@@ -292,7 +260,6 @@ export default function CanvasMap() {
             <span className="hidden sm:inline">{mode === 'draw' ? 'Drawing…' : 'No-Go Zone'}</span>
           </button>
 
-          {/* Clear zones */}
           <button
             onClick={clearNoGoZones}
             title="Clear all no-go zones"
@@ -301,7 +268,6 @@ export default function CanvasMap() {
             <Trash2 size={11} />
           </button>
 
-          {/* Zoom controls */}
           <button
             onClick={() => setZoom((z) => Math.min(z + 0.25, 5))}
             className="p-1.5 rounded bg-zinc-800 border border-zinc-700 text-zinc-500 hover:text-zinc-300 transition-colors"
@@ -318,7 +284,6 @@ export default function CanvasMap() {
             <ZoomOut size={11} />
           </button>
 
-          {/* Re-centre */}
           <button
             onClick={() => setOffset({ x: 0, y: 0 })}
             title="Re-centre on origin"
@@ -329,7 +294,6 @@ export default function CanvasMap() {
         </div>
       </div>
 
-      {/* Canvas */}
       <div className="flex-1 relative min-h-0">
         <canvas
           ref={canvasRef}

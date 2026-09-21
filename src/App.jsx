@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useCallback } from 'react';
+import { useRef, useEffect, useCallback } from 'react';
 import Header from './components/Header';
 import VideoFeed from './components/VideoFeed';
 import ChatLog from './components/ChatLog';

@@ -1,4 +1,4 @@
-import React, { forwardRef, useEffect, useRef } from 'react';
+import { forwardRef, useEffect, useRef } from 'react';
 import { Camera, WifiOff } from 'lucide-react';
 import useRobotStore from '../store/useRobotStore';
 

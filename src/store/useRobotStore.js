@@ -191,9 +191,6 @@ const useRobotStore = create((set, get) => ({
   addNoGoZone: (zone) =>
     set((state) => ({ noGoZones: [...state.noGoZones, { id: Date.now(), ...zone }] })),
 
-  removeNoGoZone: (id) =>
-    set((state) => ({ noGoZones: state.noGoZones.filter((z) => z.id !== id) })),
-
   clearNoGoZones: () => set({ noGoZones: [] }),
 
   openHighRiskModal: (command) =>
